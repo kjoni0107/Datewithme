@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Will You Be My Date?</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #fce4ec, #f3e5f5);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            transition: background 1s ease;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 24px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Scene 1 */
+        #scene1 {
+            cursor: pointer;
+            animation: bounce 2s infinite ease-in-out;
+        }
+
+        .intro-text {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #d81b60;
+            text-shadow: 0 0 10px rgba(216, 27, 96, 0.3);
+            animation: glow 1.5s infinite alternate;
+        }
+
+        /* Scene 2 */
+        #scene2 {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .typewriter-container {
+            min-height: 80px;
+            margin-bottom: 2rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .buttons-container {
+            display: none; /* Shown after typing */
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+            min-height: 60px;
+        }
+
+        button {
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        #btn-yes {
+            background: #a5d6a7;
+            color: #1b5e20;
+            z-index: 2;
+        }
+
+        #btn-no {
+            background: #ef9a9a;
+            color: #b71c1c;
+            position: relative;
+            transition: all 0.3s ease;
+            z-index: 3;
+        }
+
+        /* Scene 3 */
+        #scene3 {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        #scene3 h1 {
+            color: #d81b60;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        #scene3 p {
+            font-size: 1.2rem;
+            color: #4a148c;
+            margin-bottom: 1rem;
+        }
+
+        .heart-beat {
+            font-size: 3rem;
+            display: inline-block;
+            animation: beat 1s infinite;
+        }
+
+        /* Canvas for confetti */
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 100;
+            display: none;
+        }
+
+        /* Animations */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 5px rgba(216, 27, 96, 0.2); }
+            to { text-shadow: 0 0 20px rgba(216, 27, 96, 0.6); }
+        }
+
+        @keyframes beat {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.2); }
+            50% { transform: scale(1); }
+            75% { transform: scale(1.2); }
+        }
+
+        .floating-heart {
+            position: fixed;
+            color: rgba(255, 182, 193, 0.6);
+            font-size: 1.5rem;
+            pointer-events: none;
+            animation: floatUp 4s linear infinite;
+            z-index: 1;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { transform: translateY(-20vh) scale(1.5); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="bg-hearts"></div>
+
+    <canvas id="confetti-canvas"></canvas>
+
+    <div class="glass-card">
+        <div id="scene1" onclick="startExperience()">
+            <div class="intro-text">👋 Hi! Gab Touch Me ❤️</div>
+        </div>
+
+        <div id="scene2">
+            <div class="typewriter-container" id="typewriter"></div>
+            <div class="buttons-container" id="buttons">
+                <button id="btn-yes" onclick="handleYes()">💚 Yes</button>
+                <button id="btn-no" onclick="handleNo()">❤️ No</button>
+            </div>
+        </div>
+
+        <div id="scene3">
+            <h1>❤️ YAY!! ❤️</h1>
+            <p>You just made me the happiest person today!</p>
+            <p>Can't wait for our date! 🌹✨</p>
+            <div class="heart-beat">❤️</div>
+        </div>
+    </div>
+
+    <script>
+        // Data & Variables
+        const messages = [
+            "Hi! Roms😊",
+            "I want to ask you something...",
+            "Will you be my date? ❤️"
+        ];
+        
+        const noResponses = [
+            "Are you sure? 🥺",
+            "Please? ❤️",
+            "Think again 😭",
+            "You know you want to 😆",
+            "Last chance! 💕"
+        ];
+
+        let noClickCount = 0;
+        let yesScale = 1;
+
+        // Audio Synthesis (Web Audio API to avoid missing external sound files)
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playTone(freq, type, duration) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            osc.start();
+            gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
+            osc.stop(audioCtx.currentTime + duration);
+        }
+
+        function playPopSound() {
+            playTone(400, 'sine', 0.1);
+            setTimeout(() => playTone(600, 'sine', 0.1), 50);
+        }
+
+        function playSuccessSound() {
+            playTone(440, 'triangle', 0.1); // A4
+            setTimeout(() => playTone(554.37, 'triangle', 0.1), 100); // C#5
+            setTimeout(() => playTone(659.25, 'triangle', 0.4), 200); // E5
+        }
+
+        // Background Floating Hearts
+        function createBackgroundHearts() {
+            const container = document.getElementById('bg-hearts');
+            for(let i=0; i<15; i++) {
+                const heart = document.createElement('div');
+                heart.innerHTML = '❤️';
+                heart.className = 'floating-heart';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDelay = Math.random() * 5 + 's';
+                heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                container.appendChild(heart);
+            }
+        }
+        createBackgroundHearts();
+
+        // Scene Transitions & Logic
+        async function startExperience() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            document.getElementById('scene1').style.display = 'none';
+            const scene2 = document.getElementById('scene2');
+            scene2.style.display = 'block';
+            setTimeout(() => scene2.style.opacity = 1, 50);
+            
+            await typeText();
+        }
+
+        const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+        async function typeText() {
+            const container = document.getElementById('typewriter');
+            for (let i = 0; i < messages.length; i++) {
+                container.innerHTML = '';
+                const msg = messages[i];
+                for (let j = 0; j < msg.length; j++) {
+                    container.innerHTML += msg.charAt(j);
+                    await sleep(50);
+                }
+                await sleep(1000);
+            }
+            document.getElementById('buttons').style.display = 'flex';
+        }
+
+        function handleNo() {
+            playPopSound();
+            const btnNo = document.getElementById('btn-no');
+            const btnYes = document.getElementById('btn-yes');
+
+            // Change Text
+            btnNo.innerText = noResponses[noClickCount % noResponses.length];
+            noClickCount++;
+
+            // Grow Yes Button (15% per click)
+            yesScale += 0.15;
+            btnYes.style.transform = `scale(${yesScale})`;
+
+            // Move No Button (Constrained to viewport to avoid breaking layout)
+            btnNo.style.position = 'fixed';
+            
+            const btnWidth = btnNo.offsetWidth;
+            const btnHeight = btnNo.offsetHeight;
+            const maxX = window.innerWidth - btnWidth - 20;
+            const maxY = window.innerHeight - btnHeight - 20;
+            
+            // Generate random coordinates within safe bounds
+            const randomX = Math.max(20, Math.floor(Math.random() * maxX));
+            const randomY = Math.max(20, Math.floor(Math.random() * maxY));
+
+            btnNo.style.left = randomX + 'px';
+            btnNo.style.top = randomY + 'px';
+        }
+
+        function handleYes() {
+            playSuccessSound();
+            document.body.style.background = 'linear-gradient(135deg, #ff9a9e, #fecfef)';
+            
+            document.getElementById('scene2').style.display = 'none';
+            const scene3 = document.getElementById('scene3');
+            scene3.style.display = 'block';
+            setTimeout(() => scene3.style.opacity = 1, 50);
+
+            startConfetti();
+        }
+
+        // Lightweight Confetti System
+        function startConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            canvas.style.display = 'block';
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const pieces = [];
+            const colors = ['#f44336', '#e91e63', '#9c27b0', '#ffeb3b', '#4caf50'];
+
+            for (let i = 0; i < 100; i++) {
+                pieces.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    w: Math.random() * 10 + 5,
+                    h: Math.random() * 10 + 5,
+                    c: colors[Math.floor(Math.random() * colors.length)],
+                    dy: Math.random() * 3 + 2,
+                    dx: Math.random() * 2 - 1,
+                    rot: Math.random() * 360,
+                    rotSpd: Math.random() * 10 - 5
+                });
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                pieces.forEach(p => {
+                    p.y += p.dy;
+                    p.x += p.dx;
+                    p.rot += p.rotSpd;
+                    if (p.y > canvas.height) {
+                        p.y = -20;
+                        p.x = Math.random() * canvas.width;
+                    }
+                    ctx.save();
+                    ctx.translate(p.x + p.w/2, p.y + p.h/2);
+                    ctx.rotate(p.rot * Math.PI / 180);
+                    ctx.fillStyle = p.c;
+                    ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+                    ctx.restore();
+                });
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+    </script>
+</body>
+</html>
